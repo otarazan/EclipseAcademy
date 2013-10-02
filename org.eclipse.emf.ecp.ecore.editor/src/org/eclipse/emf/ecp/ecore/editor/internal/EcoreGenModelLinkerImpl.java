@@ -2,18 +2,13 @@ package org.eclipse.emf.ecp.ecore.editor.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.codegen.ecore.genmodel.GenJDKLevel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
-import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.eclipse.emf.codegen.util.CodeGenUtil.EclipseUtil;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
@@ -26,17 +21,15 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 
 	private Monitor monitor = EclipseUtil.createMonitor(
 			new NullProgressMonitor(), 1);
-	protected List<EPackage> referencedEPackages;
 	private IPath modelProjectLocationPath;
 	private IPath modelFragmentPath;
 	private IPath editProjectLocationPath;
 	private IPath editFragmentPath;
 	private IPath editorProjectLocationPath;
 	private IPath editorFragmentPath;
-	private IPath genModelFullPath;
+	private IPath genModelPath;
 	private String modelLocation;
 	private ModelImporter modelImporter = new EcoreImporter();
-	protected Map<URI, Set<String>> referencedGenModelURIToEPackageNSURIs;
 	private IPath defaultSrcPath = new Path("src");
 
 	public void generateGenModel(String ecorePath, String genModelPath,
@@ -49,28 +42,60 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		editFragmentPath = defaultSrcPath;
 		editorProjectLocationPath = getPathFromPathString(editorProjectPath);
 		editorFragmentPath = defaultSrcPath;
-		genModelFullPath = getPathFromPathString(genModelPath);
+		this.genModelPath = getPathFromPathString(genModelPath);
 		modelLocation = ecorePath;
-		execute();
+
+		adjustModelImporter();
+		computeEPackages();
+		adjustEPackages();
+		adjustGenModel();
+		createGenModel();
 	}
 
 	public IPath getPathFromPathString(String pathString) {
 		return new Path(new File(pathString).getAbsolutePath());
 	}
 
-	public void execute() {
-
-		adjustModelImporter();
-
-		computeEPackages();
-		adjustEPackages();
-		adjustGenModel();
-
-		doExecute();
-
+	private void adjustModelImporter() {
+		modelImporter.setUsePlatformURI(false);
+		modelImporter.setGenModelProjectLocation(modelProjectLocationPath);
+		modelImporter.setModelPluginDirectory(modelProjectLocationPath + "/./"
+				+ modelFragmentPath + "/.");
+		handleGenModelPath(genModelPath);
+		File modelFile = new File(modelLocation);
+		try {
+			URI modelFileURI = URI.createFileURI(modelFile.getCanonicalPath());
+			modelImporter.setModelLocation(modelFileURI.toString());
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load the model file: "
+					+ e.getMessage());
+		}
 	}
 
-	private void doExecute() {
+	private void handleGenModelPath(IPath genModelPath) {
+		modelImporter.setGenModelContainerPath(genModelPath
+				.removeLastSegments(1));
+		modelImporter.setGenModelFileName(genModelPath.lastSegment());
+	}
+
+	private final void computeEPackages() {
+		try {
+			modelImporter.computeEPackages(monitor);
+		} catch (Exception e) {
+			System.err
+					.println("The packages could not be computed by the model importer. "
+							+ "This might lead to unexpected results.");
+			e.printStackTrace();
+		}
+	}
+
+	private void adjustEPackages() {
+		List<EPackage> ePackages = modelImporter.getEPackages();
+		traverseEPackages(ePackages);
+		modelImporter.adjustEPackages(monitor);
+	}
+
+	private void createGenModel() {
 		modelImporter.prepareGenModelAndEPackages(monitor);
 		adjustModelImporterAfterPrepare();
 		try {
@@ -90,32 +115,23 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	}
 
 	private void adjustGenModel() {
-
 		GenModel genModel = modelImporter.getGenModel();
-		if (editProjectLocationPath != null) {
+		if (editProjectLocationPath != null)
 			genModel.setEditDirectory(editProjectLocationPath + "/./"
 					+ editFragmentPath + "/.");
-		}
-		if (editorProjectLocationPath != null) {
+		if (editorProjectLocationPath != null)
 			genModel.setEditorDirectory(editorProjectLocationPath + "/./"
 					+ editorFragmentPath + "/.");
-		}
 	}
 
-	private void adjustEPackages() {
-		List<EPackage> ePackages = modelImporter.getEPackages();
-		traverseEPackages(ePackages);
-		modelImporter.adjustEPackages(CodeGenUtil.createMonitor(monitor, 1));
-	}
-
-	protected void traverseEPackages(List<EPackage> ePackages) {
+	private void traverseEPackages(List<EPackage> ePackages) {
 		for (EPackage ePackage : ePackages) {
 			handleQualifiedEPackageName(ePackage);
 			traverseEPackages(ePackage.getESubpackages());
 		}
 	}
 
-	protected void handleQualifiedEPackageName(EPackage ePackage) {
+	private void handleQualifiedEPackageName(EPackage ePackage) {
 		String packageName = ePackage.getName();
 		int index = packageName.lastIndexOf(".");
 		if (index != -1) {
@@ -125,36 +141,4 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		}
 	}
 
-	protected void adjustModelImporter() {
-		modelImporter.setUsePlatformURI(false);
-		modelImporter.setGenModelProjectLocation(modelProjectLocationPath);
-		modelImporter.setModelPluginDirectory(modelProjectLocationPath + "/./"
-				+ modelFragmentPath + "/.");
-
-		handleGenModelPath(genModelFullPath);
-		File modelFile = new File(modelLocation);
-		try {
-			modelImporter.setModelLocation(URI.createFileURI(
-					modelFile.getCanonicalPath()).toString());
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage());
-		}
-
-	}
-
-	protected final void computeEPackages() {
-		try {
-			modelImporter.computeEPackages(monitor);
-		} catch (Exception e) {
-			System.err
-					.println("The packages could not be computed by the model importer. This might lead to unexpected results.");
-			e.printStackTrace();
-		}
-	}
-
-	protected void handleGenModelPath(IPath genModelFullPath) {
-		modelImporter.setGenModelContainerPath(genModelFullPath
-				.removeLastSegments(1));
-		modelImporter.setGenModelFileName(genModelFullPath.lastSegment());
-	}
 }
