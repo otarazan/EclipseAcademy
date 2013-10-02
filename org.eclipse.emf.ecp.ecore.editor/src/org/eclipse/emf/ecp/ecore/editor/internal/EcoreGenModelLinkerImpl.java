@@ -73,17 +73,12 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	private void doExecute() {
 		modelImporter.prepareGenModelAndEPackages(monitor);
 		adjustModelImporterAfterPrepare();
-		handleReferencedEPackages();
 		try {
 			modelImporter.saveGenModelAndEPackages(monitor);
 		} catch (Exception e) {
 			System.err.println("Gen model and packages could not be saved!");
 			e.printStackTrace();
 		}
-	}
-
-	private void handleReferencedEPackages() {
-
 	}
 
 	private void adjustModelImporterAfterPrepare() {
@@ -115,47 +110,8 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 
 	protected void traverseEPackages(List<EPackage> ePackages) {
 		for (EPackage ePackage : ePackages) {
-			/*
-			 * if (nameToPackageInfo != null) { PackageInfo packageInfo =
-			 * nameToPackageInfo.get(ePackage .getNsURI()); if (packageInfo !=
-			 * null) { handleEPackage(ePackage, true);
-			 * 
-			 * ModelImporter.EPackageImportInfo ePackageInfo = ((EcoreImporter)
-			 * getModelImporter()) .getEPackageImportInfo(ePackage); if
-			 * (ePackageInfo.getBasePackage() == null) {
-			 * ePackageInfo.setBasePackage(packageInfo.base); } if
-			 * (ePackageInfo.getPrefix() == null) {
-			 * ePackageInfo.setPrefix(packageInfo.prefix); } } }
-			 */
-
 			handleQualifiedEPackageName(ePackage);
 			traverseEPackages(ePackage.getESubpackages());
-		}
-	}
-
-	protected void handleEPackage(EPackage ePackage, boolean generate) {
-		modelImporter.getEPackageImportInfo(ePackage).setConvert(generate);
-		if (!generate) {
-			// The referencedEPackages list is used to track the packages for
-			// which is necessary to create the stub GenModel. So if the
-			// ePackage
-			// is referenced by an existing GenPackage, it doesn't need to be
-			// added to
-			// referencedEPackages.
-
-			for (GenPackage genPackage : modelImporter
-					.getReferencedGenPackages()) {
-				if (genPackage.getEcorePackage() == ePackage
-						|| (genPackage.getNSURI() != null && genPackage
-								.getNSURI().equals(ePackage.getNsURI()))) {
-					return;
-				}
-			}
-
-			if (referencedEPackages == null) {
-				referencedEPackages = new ArrayList<EPackage>();
-			}
-			referencedEPackages.add(ePackage);
 		}
 	}
 
