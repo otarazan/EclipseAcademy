@@ -37,23 +37,25 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	private String modelLocation;
 	private ModelImporter modelImporter = new EcoreImporter();
 	protected Map<URI, Set<String>> referencedGenModelURIToEPackageNSURIs;
+	private IPath defaultSrcPath = new Path("src");
 
 	public void generateGenModel(String ecorePath, String genModelPath,
 			String modelProjectPath, String editProjectPath,
 			String editorProjectPath) {
 
-		modelProjectLocationPath = new Path(
-				new File(modelProjectPath).getAbsolutePath());
-		modelFragmentPath = new Path("src");
-		editProjectLocationPath = new Path(
-				new File(editProjectPath).getAbsolutePath());
-		editFragmentPath = new Path("src");
-		editorProjectLocationPath = new Path(
-				new File(editorProjectPath).getAbsolutePath());
-		editorFragmentPath = new Path("src");
-		genModelFullPath = new Path(new File(genModelPath).getAbsolutePath());
+		modelProjectLocationPath = getPathFromPathString(modelProjectPath);
+		modelFragmentPath = defaultSrcPath;
+		editProjectLocationPath = getPathFromPathString(editProjectPath);
+		editFragmentPath = defaultSrcPath;
+		editorProjectLocationPath = getPathFromPathString(editorProjectPath);
+		editorFragmentPath = defaultSrcPath;
+		genModelFullPath = getPathFromPathString(genModelPath);
 		modelLocation = ecorePath;
 		execute();
+	}
+
+	public IPath getPathFromPathString(String pathString) {
+		return new Path(new File(pathString).getAbsolutePath());
 	}
 
 	public void execute() {
