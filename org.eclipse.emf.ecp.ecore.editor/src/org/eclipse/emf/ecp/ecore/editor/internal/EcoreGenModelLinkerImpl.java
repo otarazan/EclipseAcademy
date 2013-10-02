@@ -71,11 +71,11 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	}
 
 	private void doExecute() {
-		getModelImporter().prepareGenModelAndEPackages(monitor);
+		modelImporter.prepareGenModelAndEPackages(monitor);
 		adjustModelImporterAfterPrepare();
 		handleReferencedEPackages();
 		try {
-			getModelImporter().saveGenModelAndEPackages(monitor);
+			modelImporter.saveGenModelAndEPackages(monitor);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	}
 
 	private void adjustModelImporterAfterPrepare() {
-		GenModel genModel = getModelImporter().getGenModel();
+		GenModel genModel = modelImporter.getGenModel();
 		genModel.setComplianceLevel(GenJDKLevel.JDK50_LITERAL);
 		genModel.setImportOrganizing(false);
 		genModel.setOperationReflection(false);
@@ -96,7 +96,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 
 	private void adjustGenModel() {
 
-		GenModel genModel = getModelImporter().getGenModel();
+		GenModel genModel = modelImporter.getGenModel();
 		if (editProjectLocationPath != null) {
 			genModel.setEditDirectory(editProjectLocationPath + "/./"
 					+ editFragmentPath + "/.");
@@ -108,11 +108,9 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	}
 
 	private void adjustEPackages() {
-		List<EPackage> ePackages = ((EcoreImporter) getModelImporter())
-				.getEPackages();
+		List<EPackage> ePackages = modelImporter.getEPackages();
 		traverseEPackages(ePackages);
-		((EcoreImporter) getModelImporter()).adjustEPackages(CodeGenUtil
-				.createMonitor(monitor, 1));
+		modelImporter.adjustEPackages(CodeGenUtil.createMonitor(monitor, 1));
 	}
 
 	protected void traverseEPackages(List<EPackage> ePackages) {
@@ -136,7 +134,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	}
 
 	protected void handleEPackage(EPackage ePackage, boolean generate) {
-		getModelImporter().getEPackageImportInfo(ePackage).setConvert(generate);
+		modelImporter.getEPackageImportInfo(ePackage).setConvert(generate);
 		if (!generate) {
 			// The referencedEPackages list is used to track the packages for
 			// which is necessary to create the stub GenModel. So if the
@@ -145,7 +143,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 			// added to
 			// referencedEPackages.
 
-			for (GenPackage genPackage : getModelImporter()
+			for (GenPackage genPackage : modelImporter
 					.getReferencedGenPackages()) {
 				if (genPackage.getEcorePackage() == ePackage
 						|| (genPackage.getNSURI() != null && genPackage
@@ -165,15 +163,13 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		String packageName = ePackage.getName();
 		int index = packageName.lastIndexOf(".");
 		if (index != -1) {
-			getModelImporter().getEPackageImportInfo(ePackage).setBasePackage(
+			modelImporter.getEPackageImportInfo(ePackage).setBasePackage(
 					packageName.substring(0, index));
 			ePackage.setName(packageName.substring(index + 1));
 		}
 	}
 
 	protected void adjustModelImporter() {
-
-		ModelImporter modelImporter = getModelImporter();
 		modelImporter.setUsePlatformURI(false);
 		modelImporter.setGenModelProjectLocation(modelProjectLocationPath);
 		modelImporter.setModelPluginDirectory(modelProjectLocationPath + "/./"
@@ -192,7 +188,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 
 	protected final void computeEPackages() {
 		try {
-			getModelImporter().computeEPackages(monitor);
+			modelImporter.computeEPackages(monitor);
 		} catch (Exception e) {
 			System.err
 					.println("The packages could not be computed by the model importer. This might lead to unexpected results.");
@@ -204,9 +200,5 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		modelImporter.setGenModelContainerPath(genModelFullPath
 				.removeLastSegments(1));
 		modelImporter.setGenModelFileName(genModelFullPath.lastSegment());
-	}
-
-	private ModelImporter getModelImporter() {
-		return modelImporter;
 	}
 }
