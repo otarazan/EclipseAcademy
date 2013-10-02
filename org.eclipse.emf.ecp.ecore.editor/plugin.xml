@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecp.ecore.editor.category2"
+            name="Ecore">
+      </category>
+      <wizard
+            category="org.eclipse.emf.ecp.ecore.editor.category2"
+            class="org.eclipse.emf.ecp.ecore.editor.EcoreModelWizard"
+            icon="icons/NewEcore.gif"
+            id="org.eclipse.emf.ecp.ecore.editor.wizard2"
+            name="EcoreModel">
+      </wizard>
+   </extension>
+
+</plugin>
