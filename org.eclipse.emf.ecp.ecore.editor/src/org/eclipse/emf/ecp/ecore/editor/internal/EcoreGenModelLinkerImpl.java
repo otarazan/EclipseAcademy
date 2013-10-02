@@ -77,7 +77,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		try {
 			modelImporter.saveGenModelAndEPackages(monitor);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.err.println("Gen model and packages could not be saved!");
 			e.printStackTrace();
 		}
 	}
