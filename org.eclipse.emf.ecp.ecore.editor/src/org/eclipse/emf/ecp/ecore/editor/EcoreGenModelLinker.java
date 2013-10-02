@@ -1,15 +1,83 @@
 package org.eclipse.emf.ecp.ecore.editor;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.codegen.ecore.genmodel.GenJDKLevel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
+import org.eclipse.emf.common.util.Diagnostic;
+import org.eclipse.emf.common.util.Monitor;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.importer.ModelImporter;
 import org.eclipse.emf.importer.ecore.EcoreImporter;
 
 public class EcoreGenModelLinker {
+
+	private Monitor monitor = new Monitor() {
+
+		@Override
+		public void worked(int work) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void subTask(String name) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setTaskName(String name) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setCanceled(boolean value) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setBlocked(Diagnostic reason) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean isCanceled() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void internalWorked(double work) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void done() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void clearBlocked() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void beginTask(String name, int totalWork) {
+			// TODO Auto-generated method stub
+
+		}
+	};
 
 	private Path modelProjectLocationPath;
 	private Path modelFragmentPath;
@@ -18,6 +86,7 @@ public class EcoreGenModelLinker {
 	private Path editorProjectLocationPath;
 	private Path editorFragmentPath;
 	private IPath genModelFullPath;
+	private String modelLocation;
 	private ModelImporter modelImporter = new EcoreImporter();
 
 	public void generateGenModel(String ecorePath, String genModelPath,
@@ -34,6 +103,7 @@ public class EcoreGenModelLinker {
 				new File(editorProjectPath).getAbsolutePath());
 		editorFragmentPath = new Path("src");
 		genModelFullPath = new Path(new File(genModelPath).getAbsolutePath());
+		modelLocation = ecorePath;
 		execute();
 	}
 
@@ -50,11 +120,11 @@ public class EcoreGenModelLinker {
 	}
 
 	private void doExecute() {
-		getModelImporter().prepareGenModelAndEPackages(null);
+		getModelImporter().prepareGenModelAndEPackages(monitor);
 		adjustModelImporterAfterPrepare();
 		handleReferencedEPackages();
 		try {
-			getModelImporter().saveGenModelAndEPackages(null);
+			getModelImporter().saveGenModelAndEPackages(monitor);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -95,17 +165,22 @@ public class EcoreGenModelLinker {
 		ModelImporter modelImporter = getModelImporter();
 		modelImporter.setUsePlatformURI(false);
 		modelImporter.setGenModelProjectLocation(modelProjectLocationPath);
-		if (modelProjectLocationPath != null && modelFragmentPath != null)
-			modelImporter.setModelPluginDirectory(modelProjectLocationPath
-					+ "/./" + modelFragmentPath + "/.");
+		modelImporter.setModelPluginDirectory(modelProjectLocationPath + "/./"
+				+ modelFragmentPath + "/.");
 
 		handleGenModelPath(genModelFullPath);
-		// modelImporter.setModelLocation(modelLocations);
+		File modelFile = new File(modelLocation);
+		try {
+			modelImporter.setModelLocation(URI.createFileURI(
+					modelFile.getCanonicalPath()).toString());
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 
 	}
 
 	protected final void computeEPackages() throws Exception {
-		getModelImporter().computeEPackages(null);
+		getModelImporter().computeEPackages(monitor);
 	}
 
 	protected void handleGenModelPath(IPath genModelFullPath) {
