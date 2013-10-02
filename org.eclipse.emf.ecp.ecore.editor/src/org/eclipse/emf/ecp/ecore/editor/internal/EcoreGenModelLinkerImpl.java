@@ -1,4 +1,4 @@
-package org.eclipse.emf.ecp.ecore.editor;
+package org.eclipse.emf.ecp.ecore.editor.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,10 +18,11 @@ import org.eclipse.emf.codegen.util.CodeGenUtil.EclipseUtil;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecp.ecore.editor.IEcoreGenModelLinker;
 import org.eclipse.emf.importer.ModelImporter;
 import org.eclipse.emf.importer.ecore.EcoreImporter;
 
-public class EcoreGenModelLinker {
+public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 
 	private Monitor monitor = EclipseUtil.createMonitor(
 			new NullProgressMonitor(), 1);
@@ -39,7 +40,7 @@ public class EcoreGenModelLinker {
 
 	public void generateGenModel(String ecorePath, String genModelPath,
 			String modelProjectPath, String editProjectPath,
-			String editorProjectPath) throws Exception {
+			String editorProjectPath) {
 
 		modelProjectLocationPath = new Path(
 				new File(modelProjectPath).getAbsolutePath());
@@ -55,7 +56,7 @@ public class EcoreGenModelLinker {
 		execute();
 	}
 
-	public void execute() throws Exception {
+	public void execute() {
 
 		adjustModelImporter();
 
@@ -187,8 +188,14 @@ public class EcoreGenModelLinker {
 
 	}
 
-	protected final void computeEPackages() throws Exception {
-		getModelImporter().computeEPackages(monitor);
+	protected final void computeEPackages() {
+		try {
+			getModelImporter().computeEPackages(monitor);
+		} catch (Exception e) {
+			System.err
+					.println("The packages could not be computed by the model importer. This might lead to unexpected results.");
+			e.printStackTrace();
+		}
 	}
 
 	protected void handleGenModelPath(IPath genModelFullPath) {

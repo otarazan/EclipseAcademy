@@ -6,15 +6,16 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.eclipse.emf.ecp.ecore.editor.EcoreGenModelLinker;
+import org.eclipse.emf.ecp.ecore.editor.IEcoreGenModelLinker;
+import org.eclipse.emf.ecp.ecore.editor.factory.EcoreGenModelLinkerFactory;
 import org.junit.Test;
 
 public class EcoreGenModelLinkerTest extends TestCase {
 
 	@Test
-	public void test() throws Exception {
+	public void test() {
 		String absPath = new File("").getAbsolutePath();
-		EcoreGenModelLinker linker = new EcoreGenModelLinker();
+		IEcoreGenModelLinker linker = EcoreGenModelLinkerFactory.getEcoreGenModelLinker();
 		String ecorePath = absPath + "/resources/model/library.ecore";
 		String genModelPath = absPath + "/tmp/library.genmodel";
 		String modelProjectPath = absPath + "/tmp/result";
