@@ -10,7 +10,7 @@ import org.junit.Test;
 public class EcoreGenModelLinkerTest {
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		EcoreGenModelLinker linker = new EcoreGenModelLinker();
 		String ecorePath = "resource/model/library.ecore";
 		File folder = new File("tmp");
@@ -29,4 +29,6 @@ public class EcoreGenModelLinkerTest {
 		assertTrue(projectFile.exists());
 		assertTrue(sourceFolder.exists());
 	}
+	
+	
 }
