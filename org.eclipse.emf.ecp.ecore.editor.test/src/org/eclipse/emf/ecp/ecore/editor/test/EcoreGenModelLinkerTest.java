@@ -41,7 +41,7 @@ public class EcoreGenModelLinkerTest extends TestCase {
 
 	@Override
 	protected void tearDown() {
-		File folder = new File("tmp");
-		folder.delete();
+		//File folder = new File("tmp");
+		//folder.delete();
 	}
 }

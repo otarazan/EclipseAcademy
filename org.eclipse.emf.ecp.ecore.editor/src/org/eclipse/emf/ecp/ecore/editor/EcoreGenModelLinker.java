@@ -2,83 +2,33 @@ package org.eclipse.emf.ecp.ecore.editor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.codegen.ecore.genmodel.GenJDKLevel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
+import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
+import org.eclipse.emf.codegen.util.CodeGenUtil;
+import org.eclipse.emf.codegen.util.CodeGenUtil.EclipseUtil;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.importer.ModelImporter;
 import org.eclipse.emf.importer.ecore.EcoreImporter;
+import org.eclipse.emf.importer.ecore.EcoreImporterApplication.PackageInfo;
 
 public class EcoreGenModelLinker {
 
-	private Monitor monitor = new Monitor() {
-
-		@Override
-		public void worked(int work) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void subTask(String name) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setTaskName(String name) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setCanceled(boolean value) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setBlocked(Diagnostic reason) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public boolean isCanceled() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void internalWorked(double work) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void done() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void clearBlocked() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void beginTask(String name, int totalWork) {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
+	private Monitor monitor = EclipseUtil.createMonitor(
+			new NullProgressMonitor(), 1);
+	protected List<EPackage> referencedEPackages;
 	private Path modelProjectLocationPath;
 	private Path modelFragmentPath;
 	private Path editProjectLocationPath;
@@ -88,6 +38,7 @@ public class EcoreGenModelLinker {
 	private IPath genModelFullPath;
 	private String modelLocation;
 	private ModelImporter modelImporter = new EcoreImporter();
+	protected Map<URI, Set<String>> referencedGenModelURIToEPackageNSURIs;
 
 	public void generateGenModel(String ecorePath, String genModelPath,
 			String modelProjectPath, String editProjectPath,
@@ -157,7 +108,71 @@ public class EcoreGenModelLinker {
 	}
 
 	private void adjustEPackages() {
-		// don't need that
+		List<EPackage> ePackages = ((EcoreImporter) getModelImporter())
+				.getEPackages();
+		traverseEPackages(ePackages);
+		((EcoreImporter) getModelImporter()).adjustEPackages(CodeGenUtil
+				.createMonitor(monitor, 1));
+	}
+
+	protected void traverseEPackages(List<EPackage> ePackages) {
+		for (EPackage ePackage : ePackages) {
+			/*if (nameToPackageInfo != null) {
+				PackageInfo packageInfo = nameToPackageInfo.get(ePackage
+						.getNsURI());
+				if (packageInfo != null) {
+					handleEPackage(ePackage, true);
+
+					ModelImporter.EPackageImportInfo ePackageInfo = ((EcoreImporter) getModelImporter())
+							.getEPackageImportInfo(ePackage);
+					if (ePackageInfo.getBasePackage() == null) {
+						ePackageInfo.setBasePackage(packageInfo.base);
+					}
+					if (ePackageInfo.getPrefix() == null) {
+						ePackageInfo.setPrefix(packageInfo.prefix);
+					}
+				}
+			}*/
+
+			handleQualifiedEPackageName(ePackage);
+			traverseEPackages(ePackage.getESubpackages());
+		}
+	}
+
+	protected void handleEPackage(EPackage ePackage, boolean generate) {
+		getModelImporter().getEPackageImportInfo(ePackage).setConvert(generate);
+		if (!generate) {
+			// The referencedEPackages list is used to track the packages for
+			// which is necessary to create the stub GenModel. So if the
+			// ePackage
+			// is referenced by an existing GenPackage, it doesn't need to be
+			// added to
+			// referencedEPackages.
+
+			for (GenPackage genPackage : getModelImporter()
+					.getReferencedGenPackages()) {
+				if (genPackage.getEcorePackage() == ePackage
+						|| (genPackage.getNSURI() != null && genPackage
+								.getNSURI().equals(ePackage.getNsURI()))) {
+					return;
+				}
+			}
+
+			if (referencedEPackages == null) {
+				referencedEPackages = new ArrayList<EPackage>();
+			}
+			referencedEPackages.add(ePackage);
+		}
+	}
+
+	protected void handleQualifiedEPackageName(EPackage ePackage) {
+		String packageName = ePackage.getName();
+		int index = packageName.lastIndexOf(".");
+		if (index != -1) {
+			getModelImporter().getEPackageImportInfo(ePackage).setBasePackage(
+					packageName.substring(0, index));
+			ePackage.setName(packageName.substring(index + 1));
+		}
 	}
 
 	protected void adjustModelImporter() {
