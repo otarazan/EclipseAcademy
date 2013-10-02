@@ -5,10 +5,8 @@ Bundle-SymbolicName: org.eclipse.emf.ecp.ecore.editor.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit
-<<<<<<< HEAD
-Import-Package: org.apache.tools.ant.util,
+Import-Package: 
  org.eclipse.core.resources,
  org.eclipse.ui,
  org.eclipse.ui.part
-=======
->>>>>>> branch 'master' of https://github.com/otarazan/EclipseAcademy.git
+
