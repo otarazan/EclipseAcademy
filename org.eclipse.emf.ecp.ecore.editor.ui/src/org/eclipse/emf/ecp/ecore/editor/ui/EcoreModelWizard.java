@@ -116,7 +116,7 @@ public class EcoreModelWizard extends Wizard implements INewWizard
    * <!-- end-user-doc -->
    * @generated
    */
-  protected EcoreModelWizardNewFileCreationPage newFileCreationPage;
+  public EcoreModelWizardNewFileCreationPage newFileCreationPage;
 
   /**
    * This is the initial object creation page.
@@ -124,7 +124,7 @@ public class EcoreModelWizard extends Wizard implements INewWizard
    * <!-- end-user-doc -->
    * @generated
    */
-  protected EcoreModelWizardInitialObjectCreationPage initialObjectCreationPage;
+  public EcoreModelWizardInitialObjectCreationPage initialObjectCreationPage;
 
   /**
    * Remember the selection during initialization for populating the default container.
