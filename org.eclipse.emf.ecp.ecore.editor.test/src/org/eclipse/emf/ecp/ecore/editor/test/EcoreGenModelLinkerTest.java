@@ -35,14 +35,14 @@ public class EcoreGenModelLinkerTest extends TestCase {
 
 	@Override
 	protected void setUp() {
-		File folder = new File("tmp");
-		folder.mkdir();
-		System.out.println(folder.getAbsolutePath());
+		File tempFolder = new File("tmp");
+		tempFolder.mkdir();
+		System.out.println(tempFolder.getAbsolutePath());
 	}
 
 	@Override
 	protected void tearDown() {
-		//File folder = new File("tmp");
-		//folder.delete();
+		File folder = new File("tmp");
+		folder.delete();
 	}
 }
