@@ -15,14 +15,11 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.eclipse.emf.codegen.util.CodeGenUtil.EclipseUtil;
-import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.importer.ModelImporter;
 import org.eclipse.emf.importer.ecore.EcoreImporter;
-import org.eclipse.emf.importer.ecore.EcoreImporterApplication.PackageInfo;
 
 public class EcoreGenModelLinker {
 
@@ -117,22 +114,18 @@ public class EcoreGenModelLinker {
 
 	protected void traverseEPackages(List<EPackage> ePackages) {
 		for (EPackage ePackage : ePackages) {
-			/*if (nameToPackageInfo != null) {
-				PackageInfo packageInfo = nameToPackageInfo.get(ePackage
-						.getNsURI());
-				if (packageInfo != null) {
-					handleEPackage(ePackage, true);
-
-					ModelImporter.EPackageImportInfo ePackageInfo = ((EcoreImporter) getModelImporter())
-							.getEPackageImportInfo(ePackage);
-					if (ePackageInfo.getBasePackage() == null) {
-						ePackageInfo.setBasePackage(packageInfo.base);
-					}
-					if (ePackageInfo.getPrefix() == null) {
-						ePackageInfo.setPrefix(packageInfo.prefix);
-					}
-				}
-			}*/
+			/*
+			 * if (nameToPackageInfo != null) { PackageInfo packageInfo =
+			 * nameToPackageInfo.get(ePackage .getNsURI()); if (packageInfo !=
+			 * null) { handleEPackage(ePackage, true);
+			 * 
+			 * ModelImporter.EPackageImportInfo ePackageInfo = ((EcoreImporter)
+			 * getModelImporter()) .getEPackageImportInfo(ePackage); if
+			 * (ePackageInfo.getBasePackage() == null) {
+			 * ePackageInfo.setBasePackage(packageInfo.base); } if
+			 * (ePackageInfo.getPrefix() == null) {
+			 * ePackageInfo.setPrefix(packageInfo.prefix); } } }
+			 */
 
 			handleQualifiedEPackageName(ePackage);
 			traverseEPackages(ePackage.getESubpackages());
