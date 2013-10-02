@@ -3,16 +3,25 @@
 <plugin>
    <extension
          point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.importer.ui.EMFSimpleModelWizard"
+            name="EMF Simple">
+      </category>
+      <primaryWizard
+            id="org.eclipse.emf.ecp.ecore.editor.ui.primaryWizard1">
+      </primaryWizard>
       <wizard
             category="org.eclipse.emf.importer.ui.EMFSimpleModelWizard"
             class="org.eclipse.emf.ecp.ecore.editor.ui.EMFSimpleProjectWizard"
             id="org.eclipse.emf.ecp.ecore.editor.ui.EMFSimpleProjectWizard"
             name="EMF Simple">
       </wizard>
-      <category
-            id="org.eclipse.emf.importer.ui.EMFSimpleModelWizard"
-            name="EMF Simple">
-      </category>
+      <wizard
+            category="org.eclipse.emf.importer.ui.EMFSimpleModelWizard"
+            class="org.eclipse.emf.ecp.ecore.editor.ui.EcoreModelWizard"
+            id="org.eclipse.emf.ecp.ecore.editor.ui.ecoreModelWizard"
+            name="EcoreModelWizard">
+      </wizard>
    </extension>
 
 </plugin>

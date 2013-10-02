@@ -13,8 +13,15 @@ package org.eclipse.emf.ecp.ecore.editor.ui;
 import java.awt.Composite;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
+import org.eclipse.emf.ecp.ecore.editor.ui.EcoreModelWizard.EcoreModelWizardInitialObjectCreationPage;
+import org.eclipse.emf.ecp.ecore.editor.ui.EcoreModelWizard.EcoreModelWizardNewFileCreationPage;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.emf.importer.ImporterPlugin;
 import org.eclipse.emf.importer.ui.EMFModelWizard;
@@ -23,6 +30,7 @@ import org.eclipse.emf.importer.ui.contribution.ModelImporterDescriptor;
 import org.eclipse.emf.importer.ui.contribution.ModelImporterManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+//import org.eclipse.emf.ecp.ecore.editor.ui.EcoreModelWizard.EcoreModelWizardNewFileCreationPage;
 
 
 /**
@@ -33,10 +41,14 @@ public class EMFSimpleProjectWizard extends EMFModelWizard
   protected IPath projectLocation;
   protected IPath projectPath;
   protected WizardNewProjectCreationPage newProjectCreationPage;
+  
+  EcoreModelWizard ecoreModelWizard;
 
   public EMFSimpleProjectWizard()
   {
     super();
+    ecoreModelWizard=new EcoreModelWizard();
+    
     setWindowTitle(ImporterPlugin.INSTANCE.getString("_UI_EMFProjectWizard_title"));
   }
   
@@ -89,8 +101,63 @@ public class EMFSimpleProjectWizard extends EMFModelWizard
      
     }
 
+    addEcoreModelPages();
 
   
+  }
+  
+  void addEcoreModelPages()
+  {
+	// Create a page, set the title, and the initial model file name.
+	    //
+	  ecoreModelWizard.newFileCreationPage = ecoreModelWizard.new EcoreModelWizardNewFileCreationPage("Whatever", selection);
+	  ecoreModelWizard.newFileCreationPage.setTitle(EcoreEditorPlugin.INSTANCE.getString("_UI_EcoreModelWizard_label"));
+	  ecoreModelWizard.newFileCreationPage.setDescription(EcoreEditorPlugin.INSTANCE.getString("_UI_EcoreModelWizard_description"));
+	  ecoreModelWizard. newFileCreationPage.setFileName(EcoreEditorPlugin.INSTANCE.getString("_UI_EcoreEditorFilenameDefaultBase") + "." + ecoreModelWizard.FILE_EXTENSIONS.get(0));
+	  addPage(ecoreModelWizard.newFileCreationPage);
+
+	    // Try and get the resource selection to determine a current directory for the file dialog.
+	    //
+	    if (selection != null && !selection.isEmpty())
+	    {
+	      // Get the resource...
+	      //
+	      Object selectedElement = selection.iterator().next();
+	      if (selectedElement instanceof IResource)
+	      {
+	        // Get the resource parent, if its a file.
+	        //
+	        IResource selectedResource = (IResource)selectedElement;
+	        if (selectedResource.getType() == IResource.FILE)
+	        {
+	          selectedResource = selectedResource.getParent();
+	        }
+
+	        // This gives us a directory...
+	        //
+	        if (selectedResource instanceof IFolder || selectedResource instanceof IProject)
+	        {
+	          // Set this for the container.
+	          //
+	        	ecoreModelWizard.newFileCreationPage.setContainerFullPath(selectedResource.getFullPath());
+
+	          // Make up a unique new name here.
+	          //
+	          String defaultModelBaseFilename = EcoreEditorPlugin.INSTANCE.getString("_UI_EcoreEditorFilenameDefaultBase");
+	          String defaultModelFilenameExtension = ecoreModelWizard.FILE_EXTENSIONS.get(0);
+	          String modelFilename = defaultModelBaseFilename + "." + defaultModelFilenameExtension;
+	          for (int i = 1; ((IContainer)selectedResource).findMember(modelFilename) != null; ++i)
+	          {
+	            modelFilename = defaultModelBaseFilename + i + "." + defaultModelFilenameExtension;
+	          }
+	          ecoreModelWizard.newFileCreationPage.setFileName(modelFilename);
+	        }
+	      }
+	    }
+	    ecoreModelWizard.initialObjectCreationPage = ecoreModelWizard.new EcoreModelWizardInitialObjectCreationPage("Whatever2");
+	    ecoreModelWizard.initialObjectCreationPage.setTitle(EcoreEditorPlugin.INSTANCE.getString("_UI_EcoreModelWizard_label"));
+	    ecoreModelWizard.initialObjectCreationPage.setDescription(EcoreEditorPlugin.INSTANCE.getString("_UI_Wizard_initial_object_description"));
+	    addPage(ecoreModelWizard.initialObjectCreationPage);
   }
   
   @Override
@@ -105,6 +172,7 @@ public class EMFSimpleProjectWizard extends EMFModelWizard
   public boolean performFinish()
   {
     selectionPage.performFinish();
+    ecoreModelWizard.performFinish();
     return true;
   }
 
