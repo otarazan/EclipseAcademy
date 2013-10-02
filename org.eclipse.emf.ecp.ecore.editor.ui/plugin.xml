@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.eclipse.emf.importer.ui.EMFSimpleModelWizard"
+            class="org.eclipse.emf.ecp.ecore.editor.ui.EMFSimpleProjectWizard"
+            id="org.eclipse.emf.ecp.ecore.editor.ui.EMFSimpleProjectWizard"
+            name="EMF Simple">
+      </wizard>
+      <category
+            id="org.eclipse.emf.importer.ui.EMFSimpleModelWizard"
+            name="EMF Simple">
+      </category>
+   </extension>
+
+</plugin>
