@@ -27,12 +27,12 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	private Monitor monitor = EclipseUtil.createMonitor(
 			new NullProgressMonitor(), 1);
 	protected List<EPackage> referencedEPackages;
-	private Path modelProjectLocationPath;
-	private Path modelFragmentPath;
-	private Path editProjectLocationPath;
-	private Path editFragmentPath;
-	private Path editorProjectLocationPath;
-	private Path editorFragmentPath;
+	private IPath modelProjectLocationPath;
+	private IPath modelFragmentPath;
+	private IPath editProjectLocationPath;
+	private IPath editFragmentPath;
+	private IPath editorProjectLocationPath;
+	private IPath editorFragmentPath;
 	private IPath genModelFullPath;
 	private String modelLocation;
 	private ModelImporter modelImporter = new EcoreImporter();
