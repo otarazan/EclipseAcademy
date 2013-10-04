@@ -10,7 +10,10 @@ public class ProjectHelper {
 		String[] split = getProjectFullName().split("\\.");
 		if (split.length <= 0)
 			return "";
-		return split[split.length - 1];
+		String lastSegment = split[split.length - 1];
+		if (lastSegment.toLowerCase().equals("model") && split.length > 1)
+			return split[split.length - 2];
+		return lastSegment;
 	}
 
 	public String getNSPrefix() {
