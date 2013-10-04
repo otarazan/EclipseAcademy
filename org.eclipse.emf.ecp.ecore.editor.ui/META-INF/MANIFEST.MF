@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.0",
  org.eclipse.emf.edit.ui,
  org.eclipse.jface.text,
  org.eclipse.emf.ecore,
- org.eclipse.emf.ecp.ecore.editor;bundle-version="1.0.0"
+ org.eclipse.emf.ecp.ecore.editor;bundle-version="1.0.0",
+ org.eclipse.swt
 Import-Package: org.eclipse.emf.ecore.presentation,
  org.eclipse.emf.ecore.xmi
