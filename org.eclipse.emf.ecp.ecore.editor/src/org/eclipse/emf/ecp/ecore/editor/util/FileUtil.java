@@ -15,10 +15,10 @@ public class FileUtil {
 					delete(fileDelete);
 				}
 				if (fileToBeDeleted.list().length == 0)
-					return fileToBeDeleted.delete();
+					fileToBeDeleted.delete();
 				return true;
 			}
 		} else
-			return false;
+			return fileToBeDeleted.delete();
 	}
 }
