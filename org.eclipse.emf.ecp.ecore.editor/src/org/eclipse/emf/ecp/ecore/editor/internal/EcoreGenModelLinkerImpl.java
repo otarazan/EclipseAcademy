@@ -63,13 +63,8 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 				+ modelFragmentPath + "/.");
 		handleGenModelPath(genModelPath);
 		File modelFile = new File(modelLocation);
-		try {
-			URI modelFileURI = URI.createFileURI(modelFile.getCanonicalPath());
+			URI modelFileURI = URI.createFileURI(modelFile.getPath());
 			modelImporter.setModelLocation(modelFileURI.toString());
-		} catch (IOException e) {
-			throw new RuntimeException("Could not load the model file: "
-					+ e.getMessage());
-		}
 	}
 
 	private void handleGenModelPath(IPath genModelPath) {
