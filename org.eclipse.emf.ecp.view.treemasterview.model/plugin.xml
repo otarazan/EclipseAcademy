@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated my -->
+      <package
+            uri="http://eclipse.org/emf/ecp/view/treemasterview"
+            class="treemasterview.TreemasterviewPackage"
+            genModel="model/my.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated treemasterview -->
+      <package
+            uri="http://eclipse.org/emf/ecp/view/treemasterview"
+            class="org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.TreemasterviewPackage"
+            genModel="model/treemasterview.genmodel"/>
+   </extension>
+
+</plugin>
