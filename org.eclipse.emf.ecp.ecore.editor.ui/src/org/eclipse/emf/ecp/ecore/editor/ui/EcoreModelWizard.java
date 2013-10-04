@@ -257,6 +257,9 @@ public class EcoreModelWizard extends Wizard implements INewWizard {
 						options.put(Resource.OPTION_LINE_DELIMITER,
 								Resource.OPTION_LINE_DELIMITER_UNSPECIFIED);
 						resource.save(options);
+						 
+						
+						
 					} catch (Exception exception) {
 						EcoreEditorPlugin.INSTANCE.log(exception);
 					} finally {
