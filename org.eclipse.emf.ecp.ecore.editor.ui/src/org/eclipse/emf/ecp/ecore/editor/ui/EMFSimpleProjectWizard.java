@@ -14,10 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -30,12 +27,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.codegen.ecore.Generator;
 import org.eclipse.emf.codegen.ecore.genmodel.provider.GenModelEditPlugin;
 import org.eclipse.emf.codegen.util.CodeGenUtil;
-import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecp.ecore.editor.ui.operations.CreateModelsWorkspaceModifyOperation;
@@ -71,9 +63,6 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 	protected String initialProjectName;
 	protected IStructuredSelection selection;
 	protected WizardNewProjectCreationPage newProjectCreationPage;
-	protected List<String> initialObjectNames;
-	protected EcorePackage ecorePackage = EcorePackage.eINSTANCE;
-	protected EcoreFactory ecoreFactory = ecorePackage.getEcoreFactory();
 
 	@Override
 	public void setContainer(IWizardContainer wizardContainer) {
@@ -214,8 +203,6 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 		}
 	}
 
-	protected String modelString;
-
 	public void modifyWorkspace(IProgressMonitor progressMonitor)
 			throws CoreException, UnsupportedEncodingException, IOException {
 		project = Generator.createEMFProject(
@@ -265,29 +252,8 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 		manifest.close();
 	}
 
-	public void setInitialProjectName(String value) {
-		initialProjectName = value;
-	}
-
 	protected String[] getRequiredBundles() {
 		return new String[] { "org.eclipse.emf.ecore" };
-	}
-
-	protected Collection<String> getInitialObjectNames() {
-		if (initialObjectNames == null) {
-			initialObjectNames = new ArrayList<String>();
-			for (EClassifier eClassifier : ecorePackage.getEClassifiers()) {
-				if (eClassifier instanceof EClass) {
-					EClass eClass = (EClass) eClassifier;
-					if (!eClass.isAbstract()) {
-						initialObjectNames.add(eClass.getName());
-					}
-				}
-			}
-			Collections.sort(initialObjectNames,
-					CommonPlugin.INSTANCE.getComparator());
-		}
-		return initialObjectNames;
 	}
 
 	private IFile getModelFile(String projectName, String fileName) {
