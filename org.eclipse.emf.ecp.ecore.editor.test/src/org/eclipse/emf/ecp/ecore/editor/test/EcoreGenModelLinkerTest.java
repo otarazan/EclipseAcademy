@@ -1,14 +1,12 @@
 package org.eclipse.emf.ecp.ecore.editor.test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.eclipse.emf.ecp.ecore.editor.util.FileUtil;
 import org.eclipse.emf.ecp.ecore.editor.IEcoreGenModelLinker;
 import org.eclipse.emf.ecp.ecore.editor.factory.EcoreGenModelLinkerFactory;
+import org.eclipse.emf.ecp.ecore.editor.util.FileUtil;
 import org.junit.Test;
 
 public class EcoreGenModelLinkerTest extends TestCase {
