@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated my -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="treemasterview.presentation.TreemasterviewModelWizardID"
+            name="%_UI_TreemasterviewModelWizard_label"
+            class="treemasterview.presentation.TreemasterviewModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/TreemasterviewModelFile.gif">
+         <description>%_UI_TreemasterviewModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated my -->
+      <editor
+            id="treemasterview.presentation.TreemasterviewEditorID"
+            name="%_UI_TreemasterviewEditor_label"
+            icon="icons/full/obj16/TreemasterviewModelFile.gif"
+            extensions="treemasterview"
+            class="treemasterview.presentation.TreemasterviewEditor"
+            contributorClass="treemasterview.presentation.TreemasterviewActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>
