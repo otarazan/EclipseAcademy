@@ -31,6 +31,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecp.ecore.editor.ui.operations.CreateModelsWorkspaceModifyOperation;
+import org.eclipse.emf.ecp.ecore.editor.util.ProjectHelper;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -153,8 +154,12 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 				});
 			}
 		}
+		ProjectHelper helper = new ProjectHelper();
+		helper.setProjectFullName(newProjectCreationPage.getProjectName());
+		String filePrefix = (helper.getProjectName().isEmpty()) ? "model"
+				: helper.getProjectName();
 		IFile modelFile = getModelFile(newProjectCreationPage.getProjectName(),
-				"test.ecore");
+				filePrefix + ".ecore");
 		try {
 
 			// Do the work within an operation.
