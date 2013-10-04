@@ -6,13 +6,13 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Activator: org.eclpise.emf.ecp.view.treemasterview.model.Activator
+Bundle-Activator: org.eclipse.emf.ecp.view.treemasterview.model.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.cdo;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: treemasterview,
- treemasterview.impl,
- treemasterview.util
+Export-Package: org.eclipse.emf.ecp.view.treemasterview.model.treemasterview,
+ org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.impl,
+ org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.util
 Bundle-ActivationPolicy: lazy

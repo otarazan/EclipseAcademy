@@ -23,6 +23,18 @@
    </extension>
 
    <extension point="org.eclipse.ui.editors">
+      <!-- @generated treemasterview -->
+      <editor
+            id="org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.presentation.TreemasterviewEditorID"
+            name="%_UI_TreemasterviewEditor_label"
+            icon="icons/full/obj16/TreemasterviewModelFile.gif"
+            extensions="treemasterview"
+            class="org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.presentation.TreemasterviewEditor"
+            contributorClass="org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.presentation.TreemasterviewActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
       <!-- @generated my -->
       <editor
             id="treemasterview.presentation.TreemasterviewEditorID"

@@ -8,7 +8,7 @@ Bundle-Activator: treemasterview.presentation.MyEditorPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: treemasterview.presentation
+Export-Package: org.eclipse.emf.ecp.view.treemasterview.model.treemasterview.presentation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.emf.ecp.view.treemasterview.model.edit;visibility:=reexport,
