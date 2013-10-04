@@ -611,9 +611,9 @@ public class EcoreModelWizard extends Wizard implements INewWizard {
 			
 			//ResourcesPlugin.getWorkspace().getRoot().getFile(getContainerFullPath().append(getFileName()));
 			
-			projectName=projectName+"/model"+getFileName();
+			projectName=projectName+"/model/"+getFileName();
 			
-			Path path=new Path(new File(projectName).getAbsolutePath());
+			Path path=new Path(new File(projectName).getPath());
 			
 			return ResourcesPlugin.getWorkspace().getRoot()
 					.getFile(path);
