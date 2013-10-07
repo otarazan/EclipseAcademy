@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2005-2006 IBM Corporation and others.
- * All rights reserved.   This program and the accompanying materials
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors: 
- *   IBM - Initial API and implementation
+ * Contributors:
+ * IBM - Initial API and implementation
  */
 package org.eclipse.emf.ecp.ecore.editor.ui;
 
@@ -74,57 +74,56 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 		this.workbench = workbench;
 		this.selection = selection;
 		setDefaultPageImageDescriptor(ExtendedImageRegistry.INSTANCE
-				.getImageDescriptor(GenModelEditPlugin.INSTANCE
-						.getImage("full/wizban/NewEmptyEMFProject")));
+			.getImageDescriptor(GenModelEditPlugin.INSTANCE
+				.getImage("full/wizban/NewEmptyEMFProject")));
 		setWindowTitle(GenModelEditPlugin.INSTANCE
-				.getString("_UI_NewEmptyProject_title"));
+			.getString("_UI_NewEmptyProject_title"));
 
 	}
 
 	@Override
 	public void addPages() {
 		newProjectCreationPage = new WizardNewProjectCreationPage(
-				"NewProjectCreationPage") {
+			"NewProjectCreationPage") {
 			@Override
 			protected boolean validatePage() {
 				if (super.validatePage()) {
-					IPath locationPath = getLocationPath();
+					final IPath locationPath = getLocationPath();
 					genModelProjectLocation = Platform.getLocation().equals(
-							locationPath) ? null : locationPath;
-					IPath projectPath = getProjectHandle().getFullPath();
+						locationPath) ? null : locationPath;
+					final IPath projectPath = getProjectHandle().getFullPath();
 					genModelContainerPath = projectPath.append("src");
 					return true;
-				} else {
-					return false;
 				}
+				return false;
 			}
 
 			@Override
 			public void createControl(Composite parent) {
 				super.createControl(parent);
 				createWorkingSetGroup((Composite) getControl(), selection,
-						new String[] { "org.eclipse.jdt.ui.JavaWorkingSetPage",
-								"org.eclipse.pde.ui.pluginWorkingSet",
-								"org.eclipse.ui.resourceWorkingSetPage" });
+					new String[] { "org.eclipse.jdt.ui.JavaWorkingSetPage",
+						"org.eclipse.pde.ui.pluginWorkingSet",
+						"org.eclipse.ui.resourceWorkingSetPage" });
 			}
 		};
 		newProjectCreationPage.setInitialProjectName(initialProjectName);
 		newProjectCreationPage.setTitle(GenModelEditPlugin.INSTANCE
-				.getString("_UI_EmptyProject_title"));
+			.getString("_UI_EmptyProject_title"));
 		newProjectCreationPage.setDescription(GenModelEditPlugin.INSTANCE
-				.getString("_UI_EmptyProject_description"));
+			.getString("_UI_EmptyProject_description"));
 
 		addPage(newProjectCreationPage);
 	}
 
 	@Override
 	public boolean performFinish() {
-		WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
+		final WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
 			@Override
 			protected void execute(IProgressMonitor progressMonitor) {
 				try {
 					modifyWorkspace(progressMonitor);
-				} catch (Exception exception) {
+				} catch (final Exception exception) {
 					GenModelEditPlugin.INSTANCE.log(exception);
 				} finally {
 					progressMonitor.done();
@@ -134,116 +133,116 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 
 		try {
 			getContainer().run(false, false, operation);
-		} catch (Exception exception) {
+		} catch (final Exception exception) {
 			GenModelEditPlugin.INSTANCE.log(exception);
 			return false;
 		}
 
 		if (project != null) {
-			IWorkbenchPage page = workbench.getActiveWorkbenchWindow()
-					.getActivePage();
+			final IWorkbenchPage page = workbench.getActiveWorkbenchWindow()
+				.getActivePage();
 			final IWorkbenchPart activePart = page.getActivePart();
 			if (activePart instanceof ISetSelectionTarget) {
 				final ISelection targetSelection = new StructuredSelection(
-						project);
+					project);
 				getShell().getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						((ISetSelectionTarget) activePart)
-								.selectReveal(targetSelection);
+							.selectReveal(targetSelection);
 					}
 				});
 			}
 		}
-		ProjectHelper helper = new ProjectHelper();
+		final ProjectHelper helper = new ProjectHelper();
 		helper.setProjectFullName(newProjectCreationPage.getProjectName());
-		String filePrefix = (helper.getProjectName().isEmpty()) ? "model"
-				: helper.getProjectName();
-		IFile modelFile = getModelFile(newProjectCreationPage.getProjectName(),
-				filePrefix + ".ecore");
+		final String filePrefix = helper.getProjectName().isEmpty() ? "model"
+			: helper.getProjectName();
+		final IFile modelFile = getModelFile(newProjectCreationPage.getProjectName(),
+			filePrefix + ".ecore");
 		try {
 
 			// Do the work within an operation.
-			WorkspaceModifyOperation createModelsOperation = new CreateModelsWorkspaceModifyOperation(
-					modelFile, "EPackage", "UTF-8",
-					newProjectCreationPage.getProjectName());
+			final WorkspaceModifyOperation createModelsOperation = new CreateModelsWorkspaceModifyOperation(
+				modelFile, "EPackage", "UTF-8",
+				newProjectCreationPage.getProjectName());
 
 			getContainer().run(false, false, createModelsOperation);
 
 			// Select the new file resource in the current view.
-			IWorkbenchWindow workbenchWindow = workbench
-					.getActiveWorkbenchWindow();
-			IWorkbenchPage page = workbenchWindow.getActivePage();
+			final IWorkbenchWindow workbenchWindow = workbench
+				.getActiveWorkbenchWindow();
+			final IWorkbenchPage page = workbenchWindow.getActivePage();
 			final IWorkbenchPart activePart = page.getActivePart();
 			if (activePart instanceof ISetSelectionTarget) {
 				final ISelection targetSelection = new StructuredSelection(
-						modelFile);
+					modelFile);
 				getShell().getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						((ISetSelectionTarget) activePart)
-								.selectReveal(targetSelection);
+							.selectReveal(targetSelection);
 					}
 				});
 			}
 
 			// Open an editor on the new file.
 			try {
-				IEditorDescriptor defaultEditor = workbench.getEditorRegistry()
-						.getDefaultEditor(modelFile.getFullPath().toString());
+				final IEditorDescriptor defaultEditor = workbench.getEditorRegistry()
+					.getDefaultEditor(modelFile.getFullPath().toString());
 				page.openEditor(
-						new FileEditorInput(modelFile),
-						defaultEditor == null ? "org.eclipse.emf.ecore.presentation.EcoreEditorID"
-								: defaultEditor.getId());
-			} catch (PartInitException exception) {
+					new FileEditorInput(modelFile),
+					defaultEditor == null ? "org.eclipse.emf.ecore.presentation.EcoreEditorID"
+						: defaultEditor.getId());
+			} catch (final PartInitException exception) {
 				MessageDialog.openError(workbenchWindow.getShell(),
-						EcoreEditorPlugin.INSTANCE
-								.getString("_UI_OpenEditorError_label"),
-						exception.getMessage());
+					EcoreEditorPlugin.INSTANCE
+						.getString("_UI_OpenEditorError_label"),
+					exception.getMessage());
 				return false;
 			}
 
 			return true;
-		} catch (Exception exception) {
+		} catch (final Exception exception) {
 			EcoreEditorPlugin.INSTANCE.log(exception);
 			return false;
 		}
 	}
 
 	public void modifyWorkspace(IProgressMonitor progressMonitor)
-			throws CoreException, UnsupportedEncodingException, IOException {
+		throws CoreException, UnsupportedEncodingException, IOException {
 		project = Generator.createEMFProject(
-				new Path(genModelContainerPath.toString()),
-				genModelProjectLocation, Collections.<IProject> emptyList(),
-				progressMonitor, Generator.EMF_MODEL_PROJECT_STYLE
-						| Generator.EMF_PLUGIN_PROJECT_STYLE);
+			new Path(genModelContainerPath.toString()),
+			genModelProjectLocation, Collections.<IProject> emptyList(),
+			progressMonitor, Generator.EMF_MODEL_PROJECT_STYLE
+				| Generator.EMF_PLUGIN_PROJECT_STYLE);
 
-		IWorkingSet[] workingSets = newProjectCreationPage
-				.getSelectedWorkingSets();
+		final IWorkingSet[] workingSets = newProjectCreationPage
+			.getSelectedWorkingSets();
 		if (workingSets != null) {
 			workbench.getWorkingSetManager().addToWorkingSets(project,
-					workingSets);
+				workingSets);
 		}
 
 		CodeGenUtil.EclipseUtil.findOrCreateContainer(new Path("/"
-				+ genModelContainerPath.segment(0) + "/model"), true,
-				genModelProjectLocation, progressMonitor);
+			+ genModelContainerPath.segment(0) + "/model"), true,
+			genModelProjectLocation, progressMonitor);
 
-		PrintStream manifest = new PrintStream(
-				URIConverter.INSTANCE.createOutputStream(
-						URI.createPlatformResourceURI("/"
-								+ genModelContainerPath.segment(0)
-								+ "/META-INF/MANIFEST.MF", true), null), false,
-				"UTF-8");
+		final PrintStream manifest = new PrintStream(
+			URIConverter.INSTANCE.createOutputStream(
+				URI.createPlatformResourceURI("/"
+					+ genModelContainerPath.segment(0)
+					+ "/META-INF/MANIFEST.MF", true), null), false,
+			"UTF-8");
 		manifest.println("Manifest-Version: 1.0");
 		manifest.println("Bundle-ManifestVersion: 2");
 		manifest.print("Bundle-Name: ");
 		manifest.println(genModelContainerPath.segment(0));
 		manifest.print("Bundle-SymbolicName: ");
 		manifest.print(CodeGenUtil.validPluginID(genModelContainerPath
-				.segment(0)));
+			.segment(0)));
 		manifest.println("; singleton:=true");
 		manifest.println("Bundle-Version: 0.1.0.qualifier");
 		manifest.print("Require-Bundle: ");
-		String[] requiredBundles = getRequiredBundles();
+		final String[] requiredBundles = getRequiredBundles();
 		for (int i = 0, size = requiredBundles.length; i < size;) {
 			manifest.print(requiredBundles[i]);
 			if (++i == size) {
@@ -263,10 +262,10 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 
 	private IFile getModelFile(String projectName, String fileName) {
 		return ResourcesPlugin
-				.getWorkspace()
-				.getRoot()
-				.getFile(
-						new Path(new File(projectName + "/model/" + fileName)
-								.getPath()));
+			.getWorkspace()
+			.getRoot()
+			.getFile(
+				new Path(new File(projectName + "/model/" + fileName)
+					.getPath()));
 	}
 }
