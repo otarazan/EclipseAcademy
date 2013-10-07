@@ -22,4 +22,12 @@
             genModel="model/treemasterview.genmodel"/>
    </extension>
 
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated treemasterdetail -->
+      <package
+            uri="http://org/eclipse/emf/ecp/view/treemasterdetail/model"
+            class="org.eclipse.emf.ecp.view.treemasterdetail.model.model.ModelPackage"
+            genModel="model/treemasterdetail.genmodel"/>
+   </extension>
+
 </plugin>

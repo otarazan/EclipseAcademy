@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Swt
 Bundle-SymbolicName: org.eclipse.emf.ecp.view.treemasterview.ui.swt
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclpise.emf.ecp.view.treemasterview.ui.swt.Activator
+Bundle-Activator: org.eclipse.emf.ecp.view.treemasterdetail.ui.swt.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
