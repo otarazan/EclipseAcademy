@@ -1,4 +1,4 @@
-package org.eclpise.emf.ecp.view.treemasterview.ui;
+package org.eclipse.emf.ecp.view.treemasterdetail.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
