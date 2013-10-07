@@ -1,3 +1,14 @@
+/**
+ * Copyright (c) 2005-2006 IBM Corporation and others.
+ * All rights reserved.   This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors: 
+ *   IBM - Initial API and implementation
+ *   David Soto Setzke
+ */
 package org.eclipse.emf.ecp.ecore.editor.ui.operations;
 
 import java.util.HashMap;
@@ -94,16 +105,15 @@ public class CreateModelsWorkspaceModifyOperation extends
 					.getEcoreGenModelLinker();
 			String genModelPath = ResourcesPlugin.getWorkspace().getRoot()
 					.getFile(modelFile.getLocation()).getFullPath()
-					.removeLastSegments(1).toFile().getAbsolutePath()
+					.removeLastSegments(1).toOSString()
 					+ "/model.genmodel";
 			String ecorePath = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(modelFile.getLocation()).getFullPath().toFile()
-					.getAbsolutePath();
-			String projectPath = ResourcesPlugin.getWorkspace().getRoot()
 					.getFile(modelFile.getLocation()).getFullPath()
-					.removeLastSegments(2).toFile().getAbsolutePath();
-			linker.generateGenModel(ecorePath, genModelPath, projectPath,
-					projectPath, projectPath);
+					.toOSString();
+			String projectPath = "/"
+					+ modelFile.getLocation().segment(
+							modelFile.getLocation().segmentCount() - 3);
+			linker.generateGenModel(ecorePath, genModelPath, projectPath);
 		} catch (Exception exception) {
 			EcoreEditorPlugin.INSTANCE.log(exception);
 		} finally {

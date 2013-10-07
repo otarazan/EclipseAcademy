@@ -1,7 +1,17 @@
+/**
+ * Copyright (c) 2005-2006 IBM Corporation and others.
+ * All rights reserved.   This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors: 
+ *   IBM - Initial API and implementation
+ *   David Soto Setzke
+ */
 package org.eclipse.emf.ecp.ecore.editor.internal;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -23,32 +33,23 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 			new NullProgressMonitor(), 1);
 	private IPath modelProjectLocationPath;
 	private IPath modelFragmentPath;
-	private IPath editProjectLocationPath;
-	private IPath editFragmentPath;
-	private IPath editorProjectLocationPath;
-	private IPath editorFragmentPath;
 	private IPath genModelPath;
 	private String modelLocation;
 	private ModelImporter modelImporter = new EcoreImporter();
 	private IPath defaultSrcPath = new Path("src");
 
 	public void generateGenModel(String ecorePath, String genModelPath,
-			String modelProjectPath, String editProjectPath,
-			String editorProjectPath) {
+			String modelProjectPath) {
 
 		modelProjectLocationPath = getPathFromPathString(modelProjectPath);
 		modelFragmentPath = defaultSrcPath;
-		editProjectLocationPath = getPathFromPathString(editProjectPath);
-		editFragmentPath = defaultSrcPath;
-		editorProjectLocationPath = getPathFromPathString(editorProjectPath);
-		editorFragmentPath = defaultSrcPath;
 		this.genModelPath = getPathFromPathString(genModelPath);
 		modelLocation = ecorePath;
 
 		adjustModelImporter();
 		computeEPackages();
 		adjustEPackages();
-		adjustGenModel();
+		// adjustGenModel();
 		createGenModel();
 	}
 
@@ -63,8 +64,8 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 				+ modelFragmentPath + "/.");
 		handleGenModelPath(genModelPath);
 		File modelFile = new File(modelLocation);
-			URI modelFileURI = URI.createFileURI(modelFile.getPath());
-			modelImporter.setModelLocation(modelFileURI.toString());
+		URI modelFileURI = URI.createFileURI(modelFile.getPath());
+		modelImporter.setModelLocation(modelFileURI.toString());
 	}
 
 	private void handleGenModelPath(IPath genModelPath) {
@@ -104,20 +105,18 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	private void adjustModelImporterAfterPrepare() {
 		GenModel genModel = modelImporter.getGenModel();
 		genModel.setComplianceLevel(GenJDKLevel.JDK50_LITERAL);
-		genModel.setImportOrganizing(false);
-		genModel.setOperationReflection(false);
-		genModel.setRootExtendsClass("org.eclipse.emf.ecore.impl.EObjectImpl");
+		genModel.setImportOrganizing(true);
+		genModel.setOperationReflection(true);
 	}
 
-	private void adjustGenModel() {
-		GenModel genModel = modelImporter.getGenModel();
-		if (editProjectLocationPath != null)
-			genModel.setEditDirectory(editProjectLocationPath + "/./"
-					+ editFragmentPath + "/.");
-		if (editorProjectLocationPath != null)
-			genModel.setEditorDirectory(editorProjectLocationPath + "/./"
-					+ editorFragmentPath + "/.");
-	}
+	/*
+	 * private void adjustGenModel() { GenModel genModel =
+	 * modelImporter.getGenModel(); if (editProjectLocationPath != null)
+	 * genModel.setEditDirectory(editProjectLocationPath + "/./" +
+	 * editFragmentPath + "/."); if (editorProjectLocationPath != null)
+	 * genModel.setEditorDirectory(editorProjectLocationPath + "/./" +
+	 * editorFragmentPath + "/."); }
+	 */
 
 	private void traverseEPackages(List<EPackage> ePackages) {
 		for (EPackage ePackage : ePackages) {
