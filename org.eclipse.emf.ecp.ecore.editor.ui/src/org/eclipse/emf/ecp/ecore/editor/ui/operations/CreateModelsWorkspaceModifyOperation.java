@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2005-2006 IBM Corporation and others.
- * All rights reserved.   This program and the accompanying materials
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors: 
- *   IBM - Initial API and implementation
- *   David Soto Setzke
+ * Contributors:
+ * IBM - Initial API and implementation
+ * David Soto Setzke
  */
 package org.eclipse.emf.ecp.ecore.editor.ui.operations;
 
@@ -36,26 +36,26 @@ import org.eclipse.emf.ecp.ecore.editor.util.ProjectHelper;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 public class CreateModelsWorkspaceModifyOperation extends
-		WorkspaceModifyOperation {
+	WorkspaceModifyOperation {
 
-	private IFile modelFile;
-	private ProjectHelper projectHelper = new ProjectHelper();
-	private String initialObjectName;
-	private String encoding;
+	private final IFile modelFile;
+	private final ProjectHelper projectHelper = new ProjectHelper("");
+	private final String initialObjectName;
+	private final String encoding;
 	protected EcorePackage ecorePackage = EcorePackage.eINSTANCE;
 	protected EcoreFactory ecoreFactory = ecorePackage.getEcoreFactory();
 
 	public CreateModelsWorkspaceModifyOperation(IFile modelFile,
-			String initialObjectName, String encoding, String projectFullName) {
+		String initialObjectName, String encoding, String projectFullName) {
 		this.modelFile = modelFile;
 		this.initialObjectName = initialObjectName;
 		this.encoding = encoding;
-		this.projectHelper.setProjectFullName(projectFullName);
+		projectHelper.setProjectFullName(projectFullName);
 	}
 
 	protected EObject createInitialModel() {
-		EClass eClass = (EClass) ecorePackage.getEClassifier(initialObjectName);
-		EObject rootObject = ecoreFactory.create(eClass);
+		final EClass eClass = (EClass) ecorePackage.getEClassifier(initialObjectName);
+		final EObject rootObject = ecoreFactory.create(eClass);
 
 		// We can't have a null name, in case we're using EMOF serialization.
 		if (rootObject instanceof ENamedElement) {
@@ -69,52 +69,52 @@ public class CreateModelsWorkspaceModifyOperation extends
 		try {
 			// Create a resource set
 			//
-			ResourceSet resourceSet = new ResourceSetImpl();
+			final ResourceSet resourceSet = new ResourceSetImpl();
 			resourceSet.getURIConverter().getURIMap()
-					.putAll(EcorePlugin.computePlatformURIMap(true));
+				.putAll(EcorePlugin.computePlatformURIMap(true));
 
 			// Get the URI of the model file.
 			//
-			URI fileURI = URI.createPlatformResourceURI(modelFile.getFullPath()
-					.toString(), true);
+			final URI fileURI = URI.createPlatformResourceURI(modelFile.getFullPath()
+				.toString(), true);
 
 			// Create a resource for this file. Don't specify a
 			// content type, as it could be Ecore or EMOF.
 			//
-			Resource resource = resourceSet.createResource(fileURI);
+			final Resource resource = resourceSet.createResource(fileURI);
 
 			// Add the initial model object to the contents.
 			//
-			EObject rootObject = createInitialModel();
+			final EObject rootObject = createInitialModel();
 			if (rootObject != null) {
 				resource.getContents().add(rootObject);
 			}
 
 			// Save the contents of the resource to the file system.
-			Map<Object, Object> options = new HashMap<Object, Object>();
+			final Map<Object, Object> options = new HashMap<Object, Object>();
 			options.put(XMLResource.OPTION_ENCODING, encoding);
 			options.put(Resource.OPTION_LINE_DELIMITER,
-					Resource.OPTION_LINE_DELIMITER_UNSPECIFIED);
+				Resource.OPTION_LINE_DELIMITER_UNSPECIFIED);
 			EPackage ecorepack = EcorePackage.eINSTANCE;
 			ecorepack = (EPackage) resource.getContents().get(0);
 			ecorepack.setName(projectHelper.getProjectName());
 			ecorepack.setNsPrefix(projectHelper.getNSPrefix());
 			ecorepack.setNsURI(projectHelper.getNSURL());
 			resource.save(options);
-			IEcoreGenModelLinker linker = EcoreGenModelLinkerFactory
-					.getEcoreGenModelLinker();
-			String genModelPath = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(modelFile.getLocation()).getFullPath()
-					.removeLastSegments(1).toOSString()
-					+ "/model.genmodel";
-			String ecorePath = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(modelFile.getLocation()).getFullPath()
-					.toOSString();
-			String projectPath = "/"
-					+ modelFile.getLocation().segment(
-							modelFile.getLocation().segmentCount() - 3);
+			final IEcoreGenModelLinker linker = EcoreGenModelLinkerFactory
+				.getEcoreGenModelLinker();
+			final String genModelPath = ResourcesPlugin.getWorkspace().getRoot()
+				.getFile(modelFile.getLocation()).getFullPath()
+				.removeLastSegments(1).toOSString()
+				+ "/model.genmodel";
+			final String ecorePath = ResourcesPlugin.getWorkspace().getRoot()
+				.getFile(modelFile.getLocation()).getFullPath()
+				.toOSString();
+			final String projectPath = "/"
+				+ modelFile.getLocation().segment(
+					modelFile.getLocation().segmentCount() - 3);
 			linker.generateGenModel(ecorePath, genModelPath, projectPath);
-		} catch (Exception exception) {
+		} catch (final Exception exception) {
 			EcoreEditorPlugin.INSTANCE.log(exception);
 		} finally {
 			progressMonitor.done();

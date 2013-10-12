@@ -11,7 +11,20 @@
  ******************************************************************************/
 package org.eclipse.emf.ecp.ecore.editor;
 
+/**
+ * A class which creates a new ecore file and a new genmodel file and
+ * links the two of them.
+ */
 public interface IEcoreGenModelLinker {
+
+	/**
+	 * Creates a new ecore file and a new genmodel file and links
+	 * the two of them.
+	 * 
+	 * @param ecorePath The path (absolute) of the new ecore file
+	 * @param genModelPath The path (relative) of the new genmodel file
+	 * @param modelProjectPath The path (relative) of the model project
+	 */
 	void generateGenModel(String ecorePath, String genModelPath,
 		String modelProjectPath);
 }

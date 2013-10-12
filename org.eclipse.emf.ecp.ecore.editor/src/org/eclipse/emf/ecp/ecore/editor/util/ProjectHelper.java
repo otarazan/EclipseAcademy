@@ -10,10 +10,27 @@
  ******************************************************************************/
 package org.eclipse.emf.ecp.ecore.editor.util;
 
+/**
+ * Computes several strings like a namespace URL based on a project name.
+ */
 public class ProjectHelper {
+
+	/**
+	 * @param projectFullName The projects full name which should be used
+	 *            for the computations.
+	 */
+	public ProjectHelper(String projectFullName) {
+		this.projectFullName = projectFullName;
+	}
 
 	private String projectFullName;
 
+	/**
+	 * Returns the simple project name.
+	 * Example: Will return "project" if the full project name is "org.eclipse.project".
+	 * 
+	 * @return The simple project name based on the full project name
+	 */
 	public String getProjectName() {
 		if (getProjectFullName() == null) {
 			return "";
@@ -29,13 +46,24 @@ public class ProjectHelper {
 		return lastSegment;
 	}
 
+	/**
+	 * Returns the namespace prefix.
+	 * Example: Will return "org.eclipse" if the full project name is "org.eclipse.project".
+	 * 
+	 * @return The namespace based on the full project name
+	 */
 	public String getNSPrefix() {
-		final String projectName = getProjectFullName();
-		return projectName.substring(0, projectName.lastIndexOf("."));
+		return projectFullName.substring(0, projectFullName.lastIndexOf("."));
 	}
 
+	/**
+	 * Returns the namespace URL.
+	 * Example: Will return "http://eclipse.org/project" if the full project name is "org.eclipse.project".
+	 * 
+	 * @return The namespace URL based on the full project name
+	 */
 	public String getNSURL() {
-		final String[] split = getProjectFullName().split("\\.");
+		final String[] split = projectFullName.split("\\.");
 
 		final String temp = split[0];
 		split[0] = split[1];
@@ -50,7 +78,7 @@ public class ProjectHelper {
 	}
 
 	// join(String array,delimiter)
-	public String join(String[] r, String d) {
+	private String join(String[] r, String d) {
 		if (r.length == 0) {
 			return "";
 		}
@@ -62,10 +90,18 @@ public class ProjectHelper {
 		return sb.toString() + r[i];
 	}
 
+	/**
+	 * @return The full project name which is used for the computations.
+	 */
 	public String getProjectFullName() {
 		return projectFullName;
 	}
 
+	/**
+	 * Sets the projects full name which is used for the computations.
+	 * 
+	 * @param projectFullName The full name of the project
+	 */
 	public void setProjectFullName(String projectFullName) {
 		this.projectFullName = projectFullName;
 	}

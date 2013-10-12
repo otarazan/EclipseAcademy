@@ -9,6 +9,7 @@
  * IBM - Initial API and implementation
  * David Soto Setzke
  * 
+ * Class derived from org.eclipse.emf.importer.ecore.EcoreImporterApplication
  */
 package org.eclipse.emf.ecp.ecore.editor.internal;
 
@@ -28,6 +29,10 @@ import org.eclipse.emf.ecp.ecore.editor.IEcoreGenModelLinker;
 import org.eclipse.emf.importer.ModelImporter;
 import org.eclipse.emf.importer.ecore.EcoreImporter;
 
+/**
+ * A class which creates a new ecore file and a new genmodel file and
+ * links the two of them.
+ */
 public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 
 	private final Monitor monitor = EclipseUtil.createMonitor(
@@ -39,6 +44,14 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 	private final ModelImporter modelImporter = new EcoreImporter();
 	private final IPath defaultSrcPath = new Path("src");
 
+	/**
+	 * Creates a new ecore file and a new genmodel file and links
+	 * the two of them.
+	 * 
+	 * @param ecorePath The path (absolute) of the new ecore file
+	 * @param genModelPathParam The path (relative) of the new genmodel file
+	 * @param modelProjectPath The path (relative) of the model project
+	 */
 	public void generateGenModel(String ecorePath, String genModelPathParam,
 		String modelProjectPath) {
 
@@ -53,7 +66,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		createGenModel();
 	}
 
-	public IPath getPathFromPathString(String pathString) {
+	private IPath getPathFromPathString(String pathString) {
 		return new Path(new File(pathString).getAbsolutePath());
 	}
 
@@ -74,7 +87,7 @@ public class EcoreGenModelLinkerImpl implements IEcoreGenModelLinker {
 		modelImporter.setGenModelFileName(genModelPath.lastSegment());
 	}
 
-	private final void computeEPackages() {
+	private void computeEPackages() {
 		try {
 			modelImporter.computeEPackages(monitor);
 		} catch (final Exception e) {

@@ -7,6 +7,9 @@
  * 
  * Contributors:
  * IBM - Initial API and implementation
+ * David Soto Setzke
+ * 
+ * Class derived from
  */
 package org.eclipse.emf.ecp.ecore.editor.ui;
 
@@ -54,6 +57,9 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 
 /**
+ * 
+ * A wizard for creating a simple EMF project with an ecore and a genmodel file.
+ * 
  * @since 2.1.0
  */
 public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
@@ -153,8 +159,7 @@ public class EMFSimpleProjectWizard extends Wizard implements INewWizard {
 				});
 			}
 		}
-		final ProjectHelper helper = new ProjectHelper();
-		helper.setProjectFullName(newProjectCreationPage.getProjectName());
+		final ProjectHelper helper = new ProjectHelper(newProjectCreationPage.getProjectName());
 		final String filePrefix = helper.getProjectName().isEmpty() ? "model"
 			: helper.getProjectName();
 		final IFile modelFile = getModelFile(newProjectCreationPage.getProjectName(),

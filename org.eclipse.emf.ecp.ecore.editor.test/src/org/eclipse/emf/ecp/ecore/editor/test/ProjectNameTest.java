@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.emf.ecp.ecore.editor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.emf.ecp.ecore.editor.util.ProjectHelper;
 import org.junit.Before;
@@ -22,13 +22,13 @@ public class ProjectNameTest {
 
 	@Before
 	public void init() {
-		projectHelper = new ProjectHelper();
+		projectHelper = new ProjectHelper("");
 	}
 
 	@Test
 	public void testGetProjectName() {
 		projectHelper.setProjectFullName("org.eclipse.ecp.emf.ecore.editor");
-		String string = projectHelper.getProjectName();
+		final String string = projectHelper.getProjectName();
 		assertEquals("editor", string);
 
 	}
@@ -36,21 +36,21 @@ public class ProjectNameTest {
 	@Test
 	public void testGetProjectNameOnePart() {
 		projectHelper.setProjectFullName("org");
-		String string = projectHelper.getProjectName();
+		final String string = projectHelper.getProjectName();
 		assertEquals("org", string);
 	}
 
 	@Test
 	public void TestGetNSPrefix() {
 		projectHelper.setProjectFullName("org.eclipse.ecp.emf.ecore.editor");
-		String string = projectHelper.getNSPrefix();
+		final String string = projectHelper.getNSPrefix();
 		assertEquals("org.eclipse.ecp.emf.ecore", string);
 	}
 
 	@Test
 	public void TestGetNSURL() {
 		projectHelper.setProjectFullName("org.eclipse.ecp.emf.ecore.editor");
-		String string = projectHelper.getNSURL();
+		final String string = projectHelper.getNSURL();
 		assertEquals("http://eclipse.org/ecp/emf/ecore/editor", string);
 	}
 
