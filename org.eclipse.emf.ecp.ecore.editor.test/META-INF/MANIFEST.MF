@@ -4,9 +4,8 @@ Bundle-Name: Test
 Bundle-SymbolicName: org.eclipse.emf.ecp.ecore.editor.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit,
- org.eclipse.ui,
- org.eclipse.core.resources,
+Require-Bundle: org.junit;bundle-version="4.0.0",
+ org.eclipse.ui;bundle-version="[3.0.0,4.0.0)",
+ org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.emf.ecp.ecore.editor;bundle-version="1.0.0"
-Import-Package: org.eclipse.ui,
- org.eclipse.ui.part
+Import-Package: org.eclipse.ui.part;version="0.0.0"
