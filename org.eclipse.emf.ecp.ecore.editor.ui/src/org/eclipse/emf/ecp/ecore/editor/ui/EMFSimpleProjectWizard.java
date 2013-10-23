@@ -9,7 +9,8 @@
  * IBM - Initial API and implementation
  * David Soto Setzke
  * 
- * Class derived from
+ * Class derived from org.eclipse.emf.ecore.presentation.EcoreModelWizard and
+ * org.eclipse.emf.importer.ui.EMFProjectWizard
  */
 package org.eclipse.emf.ecp.ecore.editor.ui;
 
